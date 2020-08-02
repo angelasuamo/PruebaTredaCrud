@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TredaCrudModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="producto">
+    <Key>
+      <PropertyRef Name="SKU" />
+    </Key>
+    <Property Name="SKU" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="descripcion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="valor" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+    <Property Name="id_tienda" Type="Int32" />
+    <Property Name="imagen" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="tienda" Relationship="Self.FK_producto_tienda" FromRole="producto" ToRole="tienda" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="tienda">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="fecha_apertura" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="productoes" Relationship="Self.FK_producto_tienda" FromRole="tienda" ToRole="producto" />
+  </EntityType>
+  <Association Name="FK_producto_tienda">
+    <End Role="tienda" Type="Self.tienda" Multiplicity="0..1" />
+    <End Role="producto" Type="Self.producto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tienda">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="producto">
+        <PropertyRef Name="id_tienda" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="TredaCrudEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="productoes" EntityType="Self.producto" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="tiendas" EntityType="Self.tienda" />
+    <AssociationSet Name="FK_producto_tienda" Association="Self.FK_producto_tienda">
+      <End Role="tienda" EntitySet="tiendas" />
+      <End Role="producto" EntitySet="productoes" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
